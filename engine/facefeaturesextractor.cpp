@@ -856,7 +856,9 @@ ObjectDetector* ObjectDetector::Create(CFLibraryAPI *library_api, DetectorInfo c
 
 bool TestSaveBMP(plcl::RenderingData *data);
 std::vector<FaceFeaturesExtractor::FaceFeature> ObjectDetector::Find(plcl::BitmapInfo *data) {
+#ifdef _DEBUG
 	TestSaveBMP(data);
+#endif
 
 	unsigned int const page_width(data->Width()), page_height(data->Height());
 	std::vector<FaceFeaturesExtractor::FaceFeature> r;
