@@ -1,0 +1,28 @@
+scoped_buf<ChunkSize> - send data at blocks, 
+bool Next readChunk() // return true if next chunk avaliable
+unsigned char Chunk() { return scopedBuf };
+size readAll(void*, size);
+void WriteChunk(void*, size, bool next_chunk_avaliable = false);
+void WriteAll(void*, size);
+
+send command:
+WriteChunk(json_string, false);
+
+received response:
+bool next_chunk_avaliable = readChunk();
+parse Chunk()
+if (SUCCESS && command returns data) {
+ if (!next_chunk_avaliable)
+  throw;
+ while (next_chunk_avaliable) {
+  next_chunk_avaliable = readChunk();
+  write(stdout, Chunk());
+ }
+}
+
+send response without data:
+WriteChunk(json_string, false);
+
+send response with data:
+WriteChunk(json_string, true);
+WriteAll(data);

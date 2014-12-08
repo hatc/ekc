@@ -1,0 +1,5 @@
+LIBRARY	"tiff-plugin"
+
+EXPORTS
+  CreatePlugin
+  _InitTrace

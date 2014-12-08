@@ -1,0 +1,812 @@
+import "Objidl.idl";
+import "OaIdl.idl";
+
+/*typedef [v1_enum] enum tagPLCL_PIXEL_FORMAT {
+	PLCL_PIXEL_FORMAT_INVALID = 0,
+	PLCL_PIXEL_FORMAT_GRAY_8 = 1,
+	PLCL_PIXEL_FORMAT_RGB_24 = 2,
+	PLCL_PIXEL_FORMAT_BGR_24 = 4,
+	PLCL_PIXEL_FORMAT_RGBA_32 = 8,
+	PLCL_PIXEL_FORMAT_ARGB_32 = 16,
+	PLCL_PIXEL_FORMAT_ABGR_32 = 32,
+	PLCL_PIXEL_FORMAT_BGRA_32 = 64
+} PLCL_PIXEL_FORMAT;*/
+
+[
+    object,
+    uuid("5325A8D0-1970-4178-A630-6B0001DEF1FF"),
+    local
+]
+interface IRenderingData : IUnknown
+{
+    [propget] HRESULT Width(
+        [out, retval] DWORD *v);
+
+    [propget] HRESULT Height(
+        [out, retval] DWORD *v);
+
+    [propget] HRESULT Stride(
+        [out, retval] DWORD *v);
+        
+    [propget] HRESULT PixelFormat(
+        [out, retval] DWORD *v);
+        
+    [propget] HRESULT BitsPerPixel(
+        [out, retval] DWORD *v);
+    
+    HRESULT Scanline(
+        [in] DWORD y,
+        [out] int *scanline_ptr);
+}
+
+[
+    object,
+    uuid("5325A8D0-1970-4178-A630-6B0001DEF200"),
+    local
+]
+interface IRenderingDevice : IUnknown
+{
+    [propget] HRESULT SupportedPixfmt(
+        [out, retval] DWORD *v);
+        
+    [propget] HRESULT PixelFormat(
+        [out, retval] DWORD *v);
+        
+    [propput] HRESULT PixelFormat(
+        [in] DWORD v);
+    
+    HRESULT SetViewport(
+        [in] DWORD x1,
+        [in] DWORD y1,
+        [in] DWORD x2,
+        [in] DWORD y2);
+        
+    HRESULT SweepScanline(
+        [in] DWORD y,
+        [out] int *scanline_ptr);
+  
+    HRESULT Render();
+}
+
+[
+    object,
+    uuid("5325A8D0-1970-4178-A630-6B0001DEF201"),
+    local
+]
+interface IPluginPage : IUnknown
+{
+    [propget] HRESULT Width(
+        [out, retval] DWORD *v);
+        
+    [propput] HRESULT Width(
+        [in] DWORD v);
+        
+    [propget] HRESULT Height(
+        [out, retval] DWORD *v);
+        
+    [propput] HRESULT Height(
+        [in] DWORD v);
+        
+    [propget] HRESULT Zoom(
+        [out, retval] DWORD *v);
+        
+    [propput] HRESULT Zoom(
+        [in] DWORD v);
+        
+    [propget] HRESULT Dpi(
+        [out, retval] double *v);
+        
+    [propput] HRESULT Dpi(
+        [in] double v);
+    
+    HRESULT Render(
+        [in] IRenderingDevice *output);
+
+    [propget] HRESULT Orientation(
+        [out, retval] DWORD *v);
+        
+    [propput] HRESULT Orientation(
+        [in] DWORD v);
+}
+
+[
+    object,
+    uuid("5325A8D0-1970-4178-B630-6B0001DEF201"),
+    local
+]
+interface ITextPage : IPluginPage
+{
+    HRESULT Text(
+        [in, out] wchar_t const **r,
+        [in, out] DWORD *r_size);
+
+    HRESULT CopyText(
+        [in] wchar_t *v,
+        [in] DWORD v_size);
+
+    HRESULT Select(
+        [in] DWORD start,
+        [in] DWORD size);
+
+    HRESULT RenderSelection(
+        [in] IRenderingDevice *output);
+}
+
+[
+    object,
+    uuid("5325A8D0-1970-4178-A630-6B0001DEF202"),
+    local
+]
+interface IPluginDocument : IUnknown
+{
+    [propget] HRESULT PageCount(
+        [out, retval] DWORD *v);
+    
+    HRESULT GetPage(
+        [in] DWORD zero_based_page_number,
+        [out, retval] IPluginPage **r);
+}
+
+[
+    object,
+    uuid("5325A8D0-1970-3C5D-B05F-F61D7799D9FF"),
+    local
+]
+interface IPlugin : IUnknown
+{
+    HRESULT DocFileExtension(
+        [in, out] wchar_t const **r,
+        [in, out] DWORD *r_size);
+    
+    HRESULT CopyDocFileExtension(
+        [in] wchar_t *v,
+        [in] DWORD v_size);
+    
+    HRESULT DocFileFormat(
+        [in, out] wchar_t const **r,
+        [in, out] DWORD *r_size);
+    
+    HRESULT CopyDocFileFormat(
+        [in] wchar_t *v,
+        [in] DWORD v_size);
+    
+    HRESULT CheckHeader(
+        [in] IStream *stream);
+    
+    HRESULT GetSignatures(
+        [out] int *signatures_ptr,
+        [out] DWORD *n_signatures);
+    
+    HRESULT LoadDocument(
+        [in] IStream *input,
+        [out, retval] IPluginDocument **r);
+}
+
+// IPlugin::LoadDocument returns S_FALSE if stream does not contain a supported document type
+// IPlugin::CheckHeader returns S_FALSE if signature not match
+// IPlugin::GetSignatures returns E_FAIL if signature informaton not set
+
+[
+    object,
+    uuid("5325A8D0-1980-4178-A629-6BE8B8DEF100"),
+    local
+]
+interface IPropertyBasket : IUnknown
+{
+    HRESULT Clear();
+    
+    [propget] HRESULT Count(
+        [out, retval] long *v);
+    
+    HRESULT GetItemInfo(
+        [in] long index,
+				[out] BSTR *item_name,
+				[out] int *item_id,
+        [out] VARTYPE *var_type);
+    
+    HRESULT GetItem(
+        [in] int item_id,
+        [out, retval] VARIANT *v);
+    
+    HRESULT SetItem(
+        [in] int item_id,
+        [in] VARIANT v);
+    
+    HRESULT GetItemValue(
+        [in] int item_id,
+				[out] byte *buffer,
+        [in, out] int *buffer_size);
+    
+    HRESULT SetItemValue(
+        [in] int item_id,
+				[in] byte const *buffer,
+        [in] int buffer_size);
+    
+    HRESULT DeleteItem(
+        [in] long index);
+    
+    HRESULT RemoveItem(
+        [in] int item_id);
+    
+    HRESULT FindItem(
+        [in] int item_id,
+        [out, retval] long *index);
+}
+
+[
+    object,
+    uuid("5325A8D0-1980-4178-A629-6BE8B8DEF2B1"),
+    local
+]
+interface IFileItem : IUnknown
+{
+    [propget] HRESULT Attributes(
+        [out, retval] IPropertyBasket **v);
+    
+    [propget] HRESULT Path(
+        [out, retval] BSTR *v);
+    
+    [propget] HRESULT Name(
+        [out, retval] BSTR *v);
+    
+    [propget] HRESULT Stream(
+        [out, retval] IStream **v);
+}
+
+[
+    object,
+    uuid("5325A8D0-1980-4178-A629-6BE8B8DEF2B2"),
+    local
+]
+interface IFileList : IUnknown
+{
+    HRESULT Clear();
+    
+    [propget] HRESULT Count(
+        [out, retval] long *v);
+    
+    HRESULT GetItem(
+        [in] long index,
+        [out, retval] IFileItem **v);
+    
+    HRESULT AddItem(
+        [in] IFileItem *item,
+        [out] long *index);
+    
+    HRESULT DeleteItem(
+        [in] long index);
+    
+    HRESULT RemoveItem(
+        [in] IFileItem *item);
+
+    HRESULT GetRange(
+        [in] long index,
+        [in] long count,
+        [out, retval] IFileList **v);
+}
+
+/*typedef [v1_enum] enum tagFILTER_COMBINE_MODE {
+	FILTER_COMBINE_AND = 1,
+	FILTER_COMBINE_OR = 2,
+	FILTER_COMBINE_NOT = 4,
+	FILTER_COMBINE_XOR = 8
+} FILTER_COMBINE_MODE;*/
+
+[
+    object,
+    uuid("5325A8D0-1980-4178-A629-6BE8B8DEF2B3"),
+    local
+]
+interface IFileFilter : IUnknown
+{
+    [propget] HRESULT Name(
+        [out, retval] BSTR *v);
+    
+    HRESULT Match(
+        [in] IFileItem *item);
+    
+    [propget] HRESULT CombineMode(
+        [out, retval] DWORD *v);
+    
+    [propput] HRESULT CombineMode(
+        [in] DWORD v);
+}
+
+[
+    object,
+    uuid("B502F1C0-DAC0-456E-A1B8-A6154169E4B9"),
+    local
+]
+interface IPluginList : IUnknown
+{
+    HRESULT Clear();
+    
+    [propget] HRESULT Count(
+        [out, retval] long *v);
+    
+    HRESULT GetItem(
+        [in] long index,
+        [out, retval] IPlugin **v);
+    
+    HRESULT AddItem(
+        [in] IPlugin *item,
+        [out] long *index);
+    
+    HRESULT DeleteItem(
+        [in] long index);
+    
+    HRESULT RemoveItem(
+        [in] IPlugin *item);
+
+    HRESULT GetRange(
+        [in] long index,
+        [in] long count,
+        [out, retval] IPluginList **v);
+    
+    HRESULT LoadDocument(
+        [in] IStream *input,
+        [out, retval] IPluginDocument **r);
+    
+    [propget] HRESULT FileExtensionFilter(
+        [out, retval] IFileFilter **v);
+    
+    [propget] HRESULT FileSignatureFilter(
+        [out, retval] IFileFilter **v);
+}
+
+[
+    object,
+    uuid("5325A8D0-1980-4178-A629-6BE8B8DEF2B4"),
+    local
+]
+interface IFileFilterList : IUnknown
+{
+    HRESULT Clear();
+    
+    [propget] HRESULT Count(
+        [out, retval] long *v);
+    
+    HRESULT GetItem(
+        [in] long index,
+        [out, retval] IFileFilter **v);
+    
+    HRESULT AddItem(
+        [in] IFileFilter *item,
+        [out] long *index);
+    
+    HRESULT DeleteItem(
+        [in] long index);
+    
+    HRESULT RemoveItem(
+        [in] IFileFilter *item);
+
+    HRESULT GetRange(
+        [in] long index,
+        [in] long count,
+        [out, retval] IFileFilterList **v);
+
+    HRESULT FindItem(
+        [in] BSTR filter_name,
+        [out, retval] IFileFilter **v);
+    
+    HRESULT Match(
+        [in] IFileItem *input);
+}
+
+[
+    object,
+    uuid("5325A8D0-1980-4178-A629-6BE8B8DEF2CA"),
+    local
+]
+interface IProgressEvent : IUnknown
+{
+    HRESULT ReportProgress(
+        [in] BSTR major_info,
+				[in] BSTR minor_info,
+				[in] long major_items_total,
+				[in] long major_items_done,
+				[in] long minor_items_total,
+				[in] long minor_items_done,
+        [in, out] VARIANT_BOOL *should_terminate);
+}
+
+[
+    object,
+    uuid("5325A8D0-1980-4178-A629-6BE8B8DEF2A7"),
+    local
+]
+interface IFileEnumeratorProgressEvents : IProgressEvent
+{
+    HRESULT ReportItemFound(
+        [in] BSTR uri,
+				[in] IFileItem *item,
+				[in] BSTR item_tip,
+        [in, out] VARIANT_BOOL *should_terminate);
+    
+    HRESULT ReportEnumeratorTip(
+        [in] BSTR enumerator_tip,
+        [in, out] VARIANT_BOOL *should_terminate);
+}
+
+[
+    object,
+    uuid("5325A8D0-2980-4178-A629-9BE8B8DEF2C9"),
+    local
+]
+interface IIconRetriever : IUnknown
+{
+    HRESULT FindIcon(
+        [in] int icon_index,
+        [out, retval] int *h_icon);
+}
+
+[
+    object,
+    uuid("5325A8D0-1980-4178-A629-6BE8B8DEF2B5"),
+    local
+]
+interface IFileEnumerator : IUnknown
+{
+    HRESULT FindFromPath(
+        [in] BSTR root_path,
+        [out, retval] IFileList **files);
+    
+    HRESULT FindFromItem(
+        [in] IFileItem *item,
+        [out, retval] IFileList **files);
+    
+    HRESULT Path2File(
+        [in] BSTR file_path,
+        [out, retval] IFileItem **item);
+    
+    HRESULT ItemParent(
+        [in] IFileItem *item,
+        [out, retval] IFileItem **parent);
+    
+    [propget] HRESULT Filters(
+        [out, retval] IFileFilterList **v);
+    
+    [propget] HRESULT Params(
+        [out, retval] IPropertyBasket **v);
+    
+    [propget] HRESULT IconRetriever(
+        [out, retval] IIconRetriever **v);
+    
+    HRESULT SetProgressEventSink(
+        [in] IFileEnumeratorProgressEvents *v);
+}
+
+[
+    object,
+    uuid("5325A8D0-5463-4178-A629-3DAEE1D910A0"),
+    local
+]
+interface IFeature : IUnknown
+{
+    [propget] HRESULT ID(
+        [out, retval] CLSID *v);
+
+    HRESULT GetROI(
+        [in, out] long *count,
+        [in, out] DWORD *v);
+
+    HRESULT ClearAttributes();
+
+    [propget] HRESULT AttributeCount(
+        [out, retval] long *v);
+
+    HRESULT GetAttribute(
+        [in] long index,
+        [out] BSTR *class_name,
+        [out] CLSID *classifier_id);
+
+    HRESULT FindAttribute(
+        [in, string] wchar_t const *class_name,
+        [in] CLSID classifier_id,
+        [out] long *index);
+
+    HRESULT SetAttribute(
+        [in, string] wchar_t const *class_name,
+        [in] CLSID classifier_id,
+        [out] long *index);
+    
+    HRESULT GetValue(
+        [out] byte *buffer,
+        [in, out] int *buffer_size);
+
+    HRESULT SetValue(
+        [in] byte const *buffer,
+        [in] int buffer_size);
+
+    HRESULT Render(
+        [in] IPluginPage *page,
+        [in] byte r,
+        [in] byte g,
+        [in] byte b,
+        [in] IRenderingDevice *output);
+}
+
+[
+    object,
+    uuid("5325A8D0-5463-4178-A629-3DAEE1D910A1"),
+    local
+]
+interface IFeatureList : IUnknown
+{
+    HRESULT Clear();
+    
+    [propget] HRESULT Count(
+        [out, retval] long *v);
+    
+    HRESULT GetItem(
+        [in] long index,
+        [out, retval] IFeature **v);
+    
+    HRESULT AddItem(
+        [in] IFeature *item,
+        [out] long *index);
+    
+    HRESULT DeleteItem(
+        [in] long index);
+    
+    HRESULT RemoveItem(
+        [in] IFeature *item);
+
+    HRESULT GetRange(
+        [in] long index,
+        [in] long count,
+        [out, retval] IFeatureList **v);
+
+		HRESULT Render(
+        [in] IPluginPage *page,
+        [in] byte r,
+        [in] byte g,
+        [in] byte b,
+        [in] IRenderingDevice *output);
+}
+
+[
+    object,
+    uuid("5325A8D0-5463-4178-A629-3DAEE1D910A4"),
+    local
+]
+interface IFeatureAttribute : IUnknown
+{
+    [propget] HRESULT ID(
+        [out, retval] CLSID *v);
+
+    [propget] HRESULT Name(
+        [out, retval] BSTR *v);
+
+    [propget] HRESULT ClassCount(
+        [out, retval] long *v);
+
+    HRESULT GetClass(
+        [in] long index,
+        [out, retval] BSTR *class_name);
+    
+    HRESULT GetValue(
+        [out] byte *buffer,
+        [in, out] int *buffer_size);
+
+    HRESULT SetValue(
+        [in] byte const *buffer,
+        [in] int buffer_size);
+
+		HRESULT Classify(
+        [in] IPluginPage *page,
+        [in, out] IFeature *feature,
+        [out, retval] long *index);
+}
+
+[
+    object,
+    uuid("5325A8D0-5463-4178-A629-3DAEE1D910A3"),
+    local
+]
+interface IFeatureAttributeList : IUnknown
+{
+    HRESULT Clear();
+    
+    [propget] HRESULT Count(
+        [out, retval] long *v);
+    
+    HRESULT GetItem(
+        [in] long index,
+        [out, retval] IFeatureAttribute **v);
+    
+    HRESULT AddItem(
+        [in] IFeatureAttribute *item,
+        [out] long *index);
+    
+    HRESULT DeleteItem(
+        [in] long index);
+    
+    HRESULT RemoveItem(
+        [in] IFeatureAttribute *item);
+
+    HRESULT GetRange(
+        [in] long index,
+        [in] long count,
+        [out, retval] IFeatureAttributeList **v);
+
+		HRESULT Classify(
+        [in] IPluginPage *page,
+        [in, out] IFeature *feature,
+        [out, retval] long *index);
+}
+
+[
+    object,
+    uuid("5325A8D0-5463-4178-A629-3DAEE1D910A2"),
+    local
+]
+interface IFeatureDetector : IUnknown
+{
+    [propget] HRESULT ID(
+        [out, retval] CLSID *v);
+
+    [propget] HRESULT Name(
+        [out, retval] BSTR *v);
+
+    HRESULT LoadClassifiers(
+        [out, retval] IFeatureAttributeList **v);
+
+    HRESULT Find(
+        [in] IPluginPage *page,
+        [out, retval] IFeatureList **v);
+
+		HRESULT Classify(
+        [in] IPluginPage *page,
+        [in] IFeatureAttributeList *classifiers,
+        [out, retval] IFeatureList **v);
+}
+
+[
+    object,
+    uuid("5325A8D0-5463-4178-A629-3DAEE1D910A5"),
+    local
+]
+interface IFeatureDetectorList : IUnknown
+{
+    HRESULT Clear();
+    
+    [propget] HRESULT Count(
+        [out, retval] long *v);
+    
+    HRESULT GetItem(
+        [in] long index,
+        [out, retval] IFeatureDetector **v);
+    
+    HRESULT AddItem(
+        [in] IFeatureDetector *item,
+        [out] long *index);
+    
+    HRESULT DeleteItem(
+        [in] long index);
+    
+    HRESULT RemoveItem(
+        [in] IFeatureDetector *item);
+
+    HRESULT GetRange(
+        [in] long index,
+        [in] long count,
+        [out, retval] IFeatureDetectorList **v);
+
+    HRESULT FindItem(
+        [in] BSTR detector_name,
+        [out, retval] IFeatureDetector **v);
+}
+
+[
+    object,
+    uuid("39E25190-BD06-4A2E-B3E7-3FA7BAF384A0"),
+    local
+]
+interface ICustomClassFactory : IUnknown
+{
+    HRESULT CreateInstance(
+        [in] REFCLSID class_id,
+        [out, retval] IPersistStream **v);
+}
+
+[
+    object,
+    uuid("EB2A1178-8097-4CDE-A704-66A1FE824FDF"),
+    local
+]
+interface IEngine : IUnknown
+{
+    HRESULT LoadDetectors(
+        [out, retval] IFeatureDetectorList **detectors);
+
+    HRESULT LoadPlugins(
+        [out, retval] IPluginList **plugins);
+
+    HRESULT LoadPluginsFromPath(
+        [in] BSTR file_path,
+        [out, retval] IPluginList **plugins);
+    
+    [propget] HRESULT FileEnumerator(
+        [out, retval] IFileEnumerator **v);
+    
+    HRESULT Serialize(
+        [in] BSTR file_path,
+        [in] IUnknown *v);
+
+    HRESULT Deserialize(
+        [in] BSTR file_path,
+        [out, retval] IUnknown **v);
+
+    HRESULT RegisterClassFactory(
+        [in] ICustomClassFactory *v);
+
+    HRESULT CreateClassInstance(
+        [in] REFCLSID class_id,
+        [out, retval] IPersistStream **v);
+}
+
+[
+    uuid(2C932CAC-9B51-4e77-A876-A04D3AC6A1F1),
+    version(1.0)
+] 
+library Engine
+{
+    interface IRenderingData;
+    interface IRenderingDevice;
+    interface IPluginPage;
+		interface ITextPage;
+    interface IPluginDocument;
+    interface IPlugin;
+    interface IPropertyBasket;
+    interface IFileItem;
+    interface IFileList;
+    interface IFileFilter;
+    interface IPluginList;
+    interface IFileFilterList;
+    interface IProgressEvent;
+    interface IFileEnumeratorProgressEvents;
+    interface IIconRetriever;
+    interface IFileEnumerator;
+    interface IFeature;
+    interface IFeatureList;
+    interface IFeatureAttribute;
+		interface IFeatureAttributeList;
+		interface IFeatureDetector;
+		interface IFeatureDetectorList;
+    interface ICustomClassFactory;
+    interface IEngine;
+
+		[
+		    uuid(F4A1A7A9-AC1B-492a-82C4-D31259E08CCE)
+		] 
+		coclass CFileList
+		{
+			interface IFileList;
+		}
+		[
+		    uuid(7656F6C9-C7D7-5463-95A8-13FB8A453120)
+		] 
+		coclass CFeatureList
+		{
+			interface IFeatureList;
+		}
+    
+    typedef [v1_enum] enum tagPLCL_PIXEL_FORMAT {
+    	PLCL_PIXEL_FORMAT_INVALID = 0,
+    	PLCL_PIXEL_FORMAT_GRAY_8 = 1,
+    	PLCL_PIXEL_FORMAT_RGB_24 = 2,
+    	PLCL_PIXEL_FORMAT_BGR_24 = 4,
+    	PLCL_PIXEL_FORMAT_RGBA_32 = 8,
+    	PLCL_PIXEL_FORMAT_ARGB_32 = 16,
+    	PLCL_PIXEL_FORMAT_ABGR_32 = 32,
+    	PLCL_PIXEL_FORMAT_BGRA_32 = 64
+    } PLCL_PIXEL_FORMAT;
+
+		typedef [v1_enum] enum tagFILTER_COMBINE_MODE {
+			FILTER_COMBINE_AND = 1,
+			FILTER_COMBINE_OR = 2,
+			FILTER_COMBINE_NOT = 4,
+			FILTER_COMBINE_XOR = 8
+		} FILTER_COMBINE_MODE;
+}

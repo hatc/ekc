@@ -1,0 +1,9 @@
+LIBRARY CFATTRFILTERD
+
+EXPORTS
+
+CFCreateAttrFilter			@1
+CFDestroyAttrFilter			@2
+CFApplyAttrFilter			@3
+CFGetAttrParams				@4
+CFSetAttrParams				@5

@@ -1,0 +1,6 @@
+LIBRARY	"engine"
+
+EXPORTS
+  GetEngineObject
+  _InitTrace
+  CreateExifReader

@@ -1,0 +1,15 @@
+LIBRARY CFIMAGED
+
+EXPORTS
+
+CFCreateImage        @1
+CFDestroyImage		 @2 
+CFLoadImage          @3 
+CFLoadFromDIB        @4
+CFLoadFromDump       @5
+CFSaveToDump         @6
+CFSaveImage          @7
+CFDIBSize            @8 
+CFSaveToDIB          @9
+CFGetImageParams     @10
+CFGetDumpSize		 @11

@@ -1,0 +1,15 @@
+LIBRARY CFSYMPTOM
+
+EXPORTS 
+
+CFCreateSymptom @1
+CFDestroySymptom @2
+CFBeginSurv @3
+CFAddSurvImage @4
+CFEndSurv @5
+CFGetSurvParams @6
+CFSetSurvParams @7
+CFLoadSurvParams @8
+CFSaveSurvParams @9
+CFGetNumSurvObjects @10
+CFGetSurvObject @11

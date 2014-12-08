@@ -1,0 +1,5 @@
+LIBRARY	"djvu-plugin"
+
+EXPORTS
+  CreatePlugin
+  _InitTrace

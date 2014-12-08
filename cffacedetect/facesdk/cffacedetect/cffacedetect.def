@@ -1,0 +1,16 @@
+LIBRARY CFFACEDETECT
+
+EXPORTS
+
+CFCreateLocateFace      @1
+CFDestroyLocateFace     @2
+CFFindFaces             @3
+CFGetLocateFaceParams   @4
+CFSetLocateFaceParams   @5
+CFGetFacesCount         @6
+CFSetProgress           @7
+CFDrawFacesPos          @8
+CFGetFacePos			@9
+CFGetFaceImage			@10
+CFGetEyePos				@11
+

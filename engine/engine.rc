@@ -1,0 +1,97 @@
+#include <WinVer.h>
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#ifndef APSTUDIO_INVOKED
+#include "targetver.h"
+#endif
+#include "winres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+LANGUAGE 9, 1
+#pragma code_page(1252)
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE
+BEGIN
+	"#ifndef APSTUDIO_INVOKED\r\n"
+    "#include ""targetver.h""\r\n"
+    "#endif\r\n"
+    "#include ""winres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE  
+BEGIN
+    "1 TYPELIB ""engine.tlb""\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+#ifndef _MAC
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 1,2,0,9
+ PRODUCTVERSION 1,0,1,9
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x4L
+ FILETYPE 0x2L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904e4"
+        BEGIN
+            VALUE "CompanyName", "Controlling Chaos Technologies"
+            VALUE "FileDescription", "Engine manager"
+            VALUE "FileVersion", "1.2.0.9"
+            VALUE "LegalCopyright", "© Controlling Chaos Technologies 2012. All rights reserved."
+            VALUE "InternalName", "Engine"
+            VALUE "OriginalFilename", "engineManager.dll"
+            VALUE "ProductName", "FC level"
+            VALUE "ProductVersion", "1.0.1.9"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+		VALUE "Translation", 0x0409, 1252
+    END
+END
+
+#endif    // !_MAC
+
+////////////////////////////////////////////////////////////////////////////
+
+#endif // #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+
+#ifndef APSTUDIO_INVOKED
+
+1 TYPELIB "engine.tlb"
+
+#endif

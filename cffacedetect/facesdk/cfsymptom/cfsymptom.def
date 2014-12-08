@@ -1,0 +1,21 @@
+LIBRARY CFSYMPTOM
+
+EXPORTS 
+
+CFCreateSymptom @1
+CFDestroySymptom @2
+CFBeginSurv @3
+CFAddSurvImage @4
+CFEndSurv @5
+CFGetNumBlobs @6
+CFGetBlob @7
+CFGetSurvParams @8
+CFSetSurvParams @9
+CFLoadSurvParams @10
+CFSaveSurvParams @11
+CFSetNewBlobSignal @12
+CFSetLostBlobSignal @13
+CFSetBlobPosChagedSignal @14
+CFSetBlobImmoveableSignal @15
+CFSetBlobPresentAlarmSignal @16
+CFSetBlobImmoveabeAlarmSignal @17

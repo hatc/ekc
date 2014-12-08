@@ -1,0 +1,25 @@
+engine.dll
+cf_params/
+ settings.xml:
+  <settings>
+   <cffacedetector>
+    <config>engineX.xml</config>
+    <params>
+    <!-<faces>medium</faces>...--> // check, libxml ignore comments???
+    </params>
+   </cffacedetector>
+  </settings>
+ engine.xml
+ engine1.xml
+ attr.xml
+ ...
+
+if !Exists($(ModuleDirName)/cf_params/settings.xml)
+ load from resource engineX.xml
+ cf::FaceDetector {
+  auto_ptr<cpcl::FileStream> config_file;
+ }
+ face_detector->config_file = cpcl::FileStream::CreateTemporary();
+ face_detector->config_file->Write(engineX.xml);
+ face_detector->config_file->Flush();
+

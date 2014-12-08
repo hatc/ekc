@@ -1,0 +1,5 @@
+LIBRARY	"freeimagelib-plugin"
+
+EXPORTS
+  CreatePlugins
+  _InitTrace

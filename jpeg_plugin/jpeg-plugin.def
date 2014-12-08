@@ -1,0 +1,5 @@
+LIBRARY	"jpeg-plugin"
+
+EXPORTS
+  CreatePlugin
+  _InitTrace

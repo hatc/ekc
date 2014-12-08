@@ -1,0 +1,9 @@
+LIBRARY CFCONTENTFILTER
+
+EXPORTS
+
+CFCreateContentFilter			@1
+CFDestroyContentFilter			@2
+CFDoFilter						@3
+CFGetContentFilterOptions		@4
+CFSetContentFilterOptions		@5
